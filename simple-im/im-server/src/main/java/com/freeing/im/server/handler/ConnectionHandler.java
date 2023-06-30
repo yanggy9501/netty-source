@@ -15,13 +15,13 @@ public class ConnectionHandler {
 
     /*
 {
-code: 10001,
-nickname: 'kato'
+    code: 10001,
+    nickname: 'kato'
 }
 
 {
-code: 10001,
-nickname: 'alice'
+    code: 10001,
+    nickname: 'alice'
 }
      */
 

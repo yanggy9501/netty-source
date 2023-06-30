@@ -44,6 +44,11 @@ content: '你好啊，kato'
                         chatMessage.getContent()));
                     break;
                 }
+                case GROUP: {
+                    BootstrapServer.GROUP.write(R.success("群消息(" + chatMessage.getNickname() + ")",
+                        chatMessage.getContent()));
+                    break;
+                }
                 default: {
                     ctx.channel().writeAndFlush(R.fail("不支持的消息类型"));
                 }

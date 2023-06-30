@@ -28,6 +28,10 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<TextWebSocketF
                      ChatHandler.execute(ctx, frame);
                      break;
                  }
+                 case JOIN_GROUP: {
+                     JoinGroupChatHandler.execute(ctx);
+                     break;
+                 }
                 default : {
                     ctx.channel().writeAndFlush(R.fail("不支持的 code"));
                 }

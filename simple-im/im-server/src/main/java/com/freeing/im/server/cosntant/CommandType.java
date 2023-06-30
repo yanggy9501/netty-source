@@ -3,6 +3,7 @@ package com.freeing.im.server.cosntant;
 public enum CommandType {
     CONNECTION(10001),
     CHAT(10002),
+    JOIN_GROUP(10003),
     NULL(-1);
 
     private Integer code;

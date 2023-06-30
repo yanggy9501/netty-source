@@ -6,6 +6,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -15,6 +17,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,10 +26,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author yanggy
  */
 public class BootstrapServer {
-
+    /**
+     * 私聊 session mapper
+     */
     public static final Map<String, Channel> USER_SESSION = new ConcurrentHashMap<>(1024);
 
-    private static final int PORT = 8080;
+    /**
+     * 群聊
+     */
+    public static final ChannelGroup GROUP = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+
+    private static final int PORT = 8084;
 
     public static void start() {
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();
