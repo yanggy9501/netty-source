@@ -45,7 +45,7 @@ content: '你好啊，kato'
                     break;
                 }
                 case GROUP: {
-                    BootstrapServer.GROUP.write(R.success("群消息(" + chatMessage.getNickname() + ")",
+                    BootstrapServer.GROUP.writeAndFlush(R.success("群消息(" + chatMessage.getNickname() + ")",
                         chatMessage.getContent()));
                     break;
                 }

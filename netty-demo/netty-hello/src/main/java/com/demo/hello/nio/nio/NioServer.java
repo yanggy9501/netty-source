@@ -10,5 +10,4 @@ public class NioServer {
         nioServerHandle = new NioServerHandle(DEFAULT_PORT);
         new Thread(nioServerHandle,"Server").start();
     }
-
 }

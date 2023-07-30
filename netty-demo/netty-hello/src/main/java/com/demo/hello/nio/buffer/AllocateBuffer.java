@@ -6,7 +6,6 @@ import java.lang.management.ManagementFactory;
 import java.nio.ByteBuffer;
 
 /**
- * @author Mark老师
  * 类说明：Buffer的分配 -Xmx100M -Xms100M
  */
 public class AllocateBuffer {

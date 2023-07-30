@@ -3,7 +3,6 @@ package com.demo.hello.nio.buffer;
 import java.nio.ByteBuffer;
 
 /**
- * @author Mark老师
  * 类说明：Buffer方法演示
  */
 public class BufferMethod {
@@ -81,11 +80,5 @@ public class BufferMethod {
         System.out.println("before reset:" + buffer);
         buffer.reset();/*复位position到记录的地址*/
         System.out.println("after reset:" + buffer);
-
-
-
-
-
-
     }
 }

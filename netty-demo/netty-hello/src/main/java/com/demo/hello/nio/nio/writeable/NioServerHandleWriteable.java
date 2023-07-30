@@ -27,7 +27,7 @@ public class NioServerHandleWriteable implements Runnable{
             //打开监听通道
             serverChannel = ServerSocketChannel.open();
             //如果为 true，则此通道将被置于阻塞模式；
-            // 如果为 false，则此通道将被置于非阻塞模式
+            //如果为 false，则此通道将被置于非阻塞模式
             serverChannel.configureBlocking(false);//开启非阻塞模式
             //绑定端口 backlog设为1024
             serverChannel.socket()

@@ -17,6 +17,12 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         requestBuffer.writeBytes(bytes);
     }
 
+    /**
+     * 建立连接后回调
+     *
+     * @param ctx
+     * @throws Exception
+     */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         ctx.writeAndFlush(requestBuffer);
