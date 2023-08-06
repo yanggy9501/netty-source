@@ -86,6 +86,8 @@ public class ChannelInboundHandlerAdapter extends ChannelHandlerAdapter implemen
      * to the next {@link ChannelInboundHandler} in the {@link ChannelPipeline}.
      *
      * Sub-classes may override this method to change behavior.
+     *
+     * 解决粘包半包后一个完整应用层报被从接收缓冲区读取时触发一次，一个完整报文一次
      */
     @Skip
     @Override
@@ -98,6 +100,7 @@ public class ChannelInboundHandlerAdapter extends ChannelHandlerAdapter implemen
      * to the next {@link ChannelInboundHandler} in the {@link ChannelPipeline}.
      *
      * Sub-classes may override this method to change behavior.
+     * 解决粘包半包后从接收缓冲区读取时触发一次，读取一次触发一次
      */
     @Skip
     @Override

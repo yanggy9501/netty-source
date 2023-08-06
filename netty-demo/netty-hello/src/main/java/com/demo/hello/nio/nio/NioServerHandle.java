@@ -76,7 +76,7 @@ public class NioServerHandle implements Runnable {
                 SocketChannel sc = ssc.accept();
                 System.out.println("==========建立连接=========");
                 sc.configureBlocking(false);
-                /*关注读事件*/
+                /*关注读事件: 等待 client 发送数据*/
                 sc.register(selector, SelectionKey.OP_READ);
             }
             /*处理对端的发送的数据*/

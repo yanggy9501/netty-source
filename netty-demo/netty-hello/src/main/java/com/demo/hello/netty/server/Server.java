@@ -24,7 +24,7 @@ public class Server {
             // 相当 netty 服务器
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(parentGroup, childGroup)
-                // 监听端口的 ServerSocketChannel
+                // 监听端口的 ServerSocketChannel，其他的通信模式 epoll，aio，local（jvm内），embedded（单元测试用）
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG, 1024)
                 // 打印日志

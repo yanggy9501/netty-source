@@ -47,7 +47,10 @@ import java.util.List;
  * Be aware that you need to call {@link ReferenceCounted#retain()} on messages that are just passed through if they
  * are of type {@link ReferenceCounted}. This is needed as the {@link MessageToMessageDecoder} will call
  * {@link ReferenceCounted#release()} on decoded messages.
- *
+ * 解码器：可能出现通信双方不是同一语言，如一个用go，一个用java编写，然后通信的，这个时候就会出现双方不一致的情况。
+ * go 编写的消息到Java这边如何转为java的对象等等
+ * --> 解码器（字节到消息）
+ * 这个解码器，如：加密
  */
 public abstract class MessageToMessageDecoder<I> extends ChannelInboundHandlerAdapter {
 

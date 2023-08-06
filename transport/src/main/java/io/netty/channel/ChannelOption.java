@@ -29,6 +29,8 @@ import java.net.NetworkInterface;
  * of {@link ChannelConfig} and may depend on the nature of the transport it belongs
  * to.
  *
+ * Channel 参数
+ *
  * @param <T>   the type of the value which is valid for the {@link ChannelOption}
  */
 public class ChannelOption<T> extends AbstractConstant<ChannelOption<T>> {
@@ -112,11 +114,31 @@ public class ChannelOption<T> extends AbstractConstant<ChannelOption<T>> {
     public static final ChannelOption<Boolean> AUTO_CLOSE = valueOf("AUTO_CLOSE");
 
     public static final ChannelOption<Boolean> SO_BROADCAST = valueOf("SO_BROADCAST");
+
+    /**
+     * tcp 保活时长参数
+     */
     public static final ChannelOption<Boolean> SO_KEEPALIVE = valueOf("SO_KEEPALIVE");
+
+    /**
+     * tcp SO_SNDBUF 发送缓冲区默认大小参数
+     */
     public static final ChannelOption<Integer> SO_SNDBUF = valueOf("SO_SNDBUF");
+
+    /**
+     * tcp RCVBUF 接收缓冲区默认大小参数
+     */
     public static final ChannelOption<Integer> SO_RCVBUF = valueOf("SO_RCVBUF");
     public static final ChannelOption<Boolean> SO_REUSEADDR = valueOf("SO_REUSEADDR");
+
+    /**
+     * 开启，保证 close 时，发送缓冲区的数据全部发送
+     */
     public static final ChannelOption<Integer> SO_LINGER = valueOf("SO_LINGER");
+
+    /**
+     * 与 tcp 三次握手有关，以及完成三次连接，保存连接的队列大小参数
+     */
     public static final ChannelOption<Integer> SO_BACKLOG = valueOf("SO_BACKLOG");
     public static final ChannelOption<Integer> SO_TIMEOUT = valueOf("SO_TIMEOUT");
 
@@ -126,6 +148,11 @@ public class ChannelOption<T> extends AbstractConstant<ChannelOption<T>> {
     public static final ChannelOption<Integer> IP_MULTICAST_TTL = valueOf("IP_MULTICAST_TTL");
     public static final ChannelOption<Boolean> IP_MULTICAST_LOOP_DISABLED = valueOf("IP_MULTICAST_LOOP_DISABLED");
 
+    /**
+     * tcp 报文默认最大 1460字节，如发送报文：200 300 400 三个报文，和小于 1460 ，所以存在三个报文一起打包发送的优化
+     * 缺点：对端收到会比收单个慢
+     * 这个参数开启保证无论 tcp 报文多小都立刻发送
+     */
     public static final ChannelOption<Boolean> TCP_NODELAY = valueOf("TCP_NODELAY");
     /**
      * Client-side TCP FastOpen. Sending data with the initial TCP handshake.

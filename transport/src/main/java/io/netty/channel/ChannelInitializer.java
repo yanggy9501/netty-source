@@ -48,6 +48,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * </pre>
  * Be aware that this class is marked as {@link Sharable} and so the implementation must be safe to be re-used.
  *
+ * 本质也是 ChannelHandler，但是比较特殊
+ * 1. 不做业务处理
+ * 2. 目的：负责将业务 ChannelHandler 添加到 Pipeline，然后移除自己
+ *
  * @param <C>   A sub-type of {@link Channel}
  */
 @Sharable

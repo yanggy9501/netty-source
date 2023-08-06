@@ -72,6 +72,10 @@ import static java.lang.Integer.MAX_VALUE;
  * Some methods such as {@link ByteBuf#readBytes(int)} will cause a memory leak if the returned buffer
  * is not released or added to the <tt>out</tt> {@link List}. Use derived buffers like {@link ByteBuf#readSlice(int)}
  * to avoid leaking memory.
+ *
+ * 解码器：可能出现通信双方不是同一语言，如一个用go，一个用java编写，然后通信的，这个时候就会出现双方不一致的情况。
+ * go 编写的消息到Java这边如何转为java的对象等等
+ * --> 解码器（字节到消息）
  */
 public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter {
 

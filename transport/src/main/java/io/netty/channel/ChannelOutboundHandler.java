@@ -73,6 +73,8 @@ public interface ChannelOutboundHandler extends ChannelHandler {
 
     /**
      * Intercepts {@link ChannelHandlerContext#read()}.
+     *
+     * 在真正读取数据 socketChannel.read 之前的前置处理
      */
     void read(ChannelHandlerContext ctx) throws Exception;
 
