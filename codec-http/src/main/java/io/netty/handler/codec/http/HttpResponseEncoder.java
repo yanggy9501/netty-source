@@ -23,6 +23,8 @@ import static io.netty.handler.codec.http.HttpConstants.*;
 /**
  * Encodes an {@link HttpResponse} or an {@link HttpContent} into
  * a {@link ByteBuf}.
+ *
+ * Http 报文编码器
  */
 public class HttpResponseEncoder extends HttpObjectEncoder<HttpResponse> {
 

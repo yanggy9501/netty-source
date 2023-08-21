@@ -178,17 +178,23 @@ import java.lang.annotation.Target;
 public interface ChannelHandler {
 
     /**
+     * handler 添加成功时除非
+     *
      * Gets called after the {@link ChannelHandler} was added to the actual context and it's ready to handle events.
      */
     void handlerAdded(ChannelHandlerContext ctx) throws Exception;
 
     /**
+     * handler 被移除时触发
+     *
      * Gets called after the {@link ChannelHandler} was removed from the actual context and it doesn't handle events
      * anymore.
      */
     void handlerRemoved(ChannelHandlerContext ctx) throws Exception;
 
     /**
+     * 有异常抛出时触发
+     *
      * Gets called if a {@link Throwable} was thrown.
      *
      * @deprecated if you want to handle this event you should implement {@link ChannelInboundHandler} and

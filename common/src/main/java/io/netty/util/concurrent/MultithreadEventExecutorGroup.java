@@ -34,7 +34,6 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
 
     /**
      * EventLoop 线程池的线程数组（ScheduledExecutorService）
-     *
      * 通常使用的是 {@link io.netty.channel.nio.NioEventLoop}
      * ExecutorService 在juc代表线程池，但是这里理解为只有一个线程的线程池，看作线程
      */
@@ -42,6 +41,10 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
     private final Set<EventExecutor> readonlyChildren;
     private final AtomicInteger terminatedChildren = new AtomicInteger();
     private final Promise<?> terminationFuture = new DefaultPromise(GlobalEventExecutor.INSTANCE);
+
+    /**
+     * 用于从 children 线程数组中获取一个 EventExecutor
+     */
     private final EventExecutorChooserFactory.EventExecutorChooser chooser;
 
     /**

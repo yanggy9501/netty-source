@@ -33,7 +33,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadFactory;
 
 /**
- * NioEventLoopGroup 是一个线程池，线程池的线程都配置有各自的 Selector，NioEventLoopGroup 核心工作负责处理来自网络的 IO 事件
+ * NioEventLoopGroup 是一个线程池，线程池的线程都配置有各自的 Selector，NioEventLoopGroup 核心工作负责处理来自网络的 IO 事件。
+ * 功能：
+ * 1. 添加定时任务 schedule()、添加普通任务 submit()
+ * 2. 创建 EventLoop newChild()
+ * 3. 获取 EventLoop
+ * 4. 注册 channel register()
  *
  * {@link MultithreadEventLoopGroup} implementations which is used for NIO {@link Selector} based {@link Channel}s.
  */
@@ -96,6 +101,13 @@ public class NioEventLoopGroup extends MultithreadEventLoopGroup {
         this(nThreads, executor, selectorProvider, DefaultSelectStrategyFactory.INSTANCE);
     }
 
+    /**
+     *
+     * @param nThreads
+     * @param executor
+     * @param selectorProvider java 原生类，用于获取 nio Selector 以及可选的 channel；provider() 获取 selectorProvider 实例，openSelector() 开启 Selector 选择器
+     * @param selectStrategyFactory DefaultSelectStrategyFactory 用于创建 DefaultSelectStrategy
+     */
     public NioEventLoopGroup(int nThreads, Executor executor, final SelectorProvider selectorProvider,
                              final SelectStrategyFactory selectStrategyFactory) {
         super(nThreads, executor, selectorProvider, selectStrategyFactory, RejectedExecutionHandlers.reject());
@@ -168,6 +180,14 @@ public class NioEventLoopGroup extends MultithreadEventLoopGroup {
         }
     }
 
+    /**
+     * 创建 NioEventLoop
+     *
+     * @param executor
+     * @param args
+     * @return
+     * @throws Exception
+     */
     @Override
     protected EventLoop newChild(Executor executor, Object... args) throws Exception {
         SelectorProvider selectorProvider = (SelectorProvider) args[0];

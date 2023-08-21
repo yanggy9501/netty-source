@@ -75,6 +75,8 @@ public interface ChannelOutboundHandler extends ChannelHandler {
      * Intercepts {@link ChannelHandlerContext#read()}.
      *
      * 在真正读取数据 socketChannel.read 之前的前置处理
+     * 其实这个 read 方法不是表示读数据，而是表示业务发出了读（read）数据的要求，这个要求也会封装为一个事件进行传播，这个事件
+     * 因为是业务发出到网络的，自然就是个出站事件，而且这个事件触发的就是 ChannelOutboundHandler 中 read 方法。
      */
     void read(ChannelHandlerContext ctx) throws Exception;
 

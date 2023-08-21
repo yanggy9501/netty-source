@@ -18,6 +18,8 @@ package io.netty.util.concurrent;
 import io.netty.util.internal.UnstableApi;
 
 /**
+ * EventExecutorChooser 用于从 children 数组中选取出合适的 NioEventLoop 来执行任务
+ *
  * Factory that creates new {@link EventExecutorChooser}s.
  */
 @UnstableApi

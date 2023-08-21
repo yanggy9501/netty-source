@@ -32,6 +32,8 @@ public interface ChannelInboundHandler extends ChannelHandler {
     void channelUnregistered(ChannelHandlerContext ctx) throws Exception;
 
     /**
+     * 注册完之后触发
+     *
      * The {@link Channel} of the {@link ChannelHandlerContext} is now active
      */
     void channelActive(ChannelHandlerContext ctx) throws Exception;
@@ -43,11 +45,15 @@ public interface ChannelInboundHandler extends ChannelHandler {
     void channelInactive(ChannelHandlerContext ctx) throws Exception;
 
     /**
+     * 读数据时触发
+     *
      * Invoked when the current {@link Channel} has read a message from the peer.
      */
     void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception;
 
     /**
+     * 数据读取完时触发
+     *
      * Invoked when the last message read by the current read operation has been consumed by
      * {@link #channelRead(ChannelHandlerContext, Object)}.  If {@link ChannelOption#AUTO_READ} is off, no further
      * attempt to read an inbound data from the current {@link Channel} will be made until

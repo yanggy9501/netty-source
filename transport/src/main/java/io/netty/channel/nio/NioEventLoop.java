@@ -51,7 +51,11 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * NioEventLoop 是一个只有一个线程的线程池，本身含有一个 NioEventLoopGroup 传递过来的 Executor
+ * NioEventLoop 是一个只有一个线程的线程池，本身含有一个 NioEventLoopGroup 传递过来的 Executor。
+ * 接口功能：
+ * 1. 线程池类，执行任务
+ * 2. EventLoop，处理已经注册到 channel 的 io 事件
+ * 3. channel 的注册
  *
  * {@link SingleThreadEventLoop} implementation which register the {@link Channel}'s to a
  * {@link Selector} and so does the multi-plexing of these in the event loop.
@@ -115,13 +119,14 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     }
 
     /**
-     * 优化过的 Selector
+     * 优化过的 netty 包装 Selector(SelectedSelectionKeySetSelector)
+     * 每一个 NioEventLoop 配一个选择器 Selector，在创建 NioEventLoop 的构造函数中会调用其自身方法 openSelector获取 selector
      * The NIO {@link Selector}.
      */
     private Selector selector;
 
     /**
-     * 原生 Selector
+     * Java nio 原生 Selector(WEPollSelectorImpl)
      */
     private Selector unwrappedSelector;
     private SelectedSelectionKeySet selectedKeys;
@@ -137,6 +142,14 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     //    other value T    when EL is waiting with wakeup scheduled at time T
     private final AtomicLong nextWakeupNanos = new AtomicLong(AWAKE);
 
+    /**
+     * NioEventLoop是一个事件轮询器，在它的 run 方法中其实是一个死循环，不断重复三个过程：
+     * 1. 获取IO事件
+     * 2. 处理IO事件，
+     * 3. 处理任务队列中的task
+     *  而 SelectStrategy 就是用于第一步获取 IO 事件，它的 calculateStrategy 方法决定以何种方式获取IO事件，在 SelectStrategy 接口中定义了三种策略
+     * {@link io.netty.channel.DefaultSelectStrategyFactory.INSTANCE}
+     */
     private final SelectStrategy selectStrategy;
 
     private volatile int ioRatio = 50;
@@ -190,6 +203,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     private SelectorTuple openSelector() {
         final Selector unwrappedSelector;
         try {
+            // 原生 nio selector
             unwrappedSelector = provider.openSelector();
         } catch (IOException e) {
             throw new ChannelException("failed to open a new selector", e);
@@ -276,6 +290,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             logger.trace("failed to instrument a special java.util.Set into: {}", unwrappedSelector, e);
             return new SelectorTuple(unwrappedSelector);
         }
+        // 该步骤就是见 NioEventLoop 的 selectedKeySet 赋值给 unwrappedSelector 的 selectedKeys 和 publicSelectedKeys 属性
         selectedKeys = selectedKeySet;
         logger.trace("instrumented a special java.util.Set into: {}", unwrappedSelector);
         return new SelectorTuple(unwrappedSelector,

@@ -61,7 +61,15 @@ import static io.netty.channel.ChannelHandlerMask.mask;
 abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, ResourceLeakHint {
 
     private static final InternalLogger logger = InternalLoggerFactory.getInstance(AbstractChannelHandlerContext.class);
+
+    /**
+     * 后继
+     */
     volatile AbstractChannelHandlerContext next;
+
+    /**
+     * 前驱
+     */
     volatile AbstractChannelHandlerContext prev;
 
     private static final AtomicIntegerFieldUpdater<AbstractChannelHandlerContext> HANDLER_STATE_UPDATER =
@@ -85,6 +93,9 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
      */
     private static final int INIT = 0;
 
+    /**
+     * 当前 context（Handler 的包装） 所注册的 pipeline
+     */
     private final DefaultChannelPipeline pipeline;
     private final String name;
     private final boolean ordered;
