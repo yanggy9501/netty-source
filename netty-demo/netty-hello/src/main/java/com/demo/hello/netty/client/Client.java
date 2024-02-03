@@ -1,6 +1,9 @@
 package com.demo.hello.netty.client;
 
+import com.demo.hello.netty.CtxContext;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -8,11 +11,29 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
+import java.util.Scanner;
+
 /**
- * @author yanggy
+ * Client
  */
 public class Client {
     public static void main(String[] args) {
+        Thread client = new Thread(() -> start(), "client-thread");
+        client.start();
+        Scanner scanner = new Scanner(System.in);
+        ByteBuf requestBuffer;
+        while (true) {
+            System.out.println("请输入：");
+            String msg = scanner.nextLine();
+            byte[] bytes = msg.getBytes();
+            requestBuffer = Unpooled.buffer(bytes.length);
+            requestBuffer.writeBytes(bytes);
+            // @see com.demo.hello.netty.client.NettyClientHandler.channelActive
+            CtxContext.CTX_MAP.get("client").writeAndFlush(requestBuffer);
+        }
+    }
+
+    public static void start() {
         NioEventLoopGroup group = new NioEventLoopGroup();
 
         try {

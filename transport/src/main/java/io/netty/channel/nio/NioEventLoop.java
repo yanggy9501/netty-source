@@ -558,7 +558,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                         nextWakeupNanos.set(curDeadlineNanos);
                         try {
                             if (!hasTasks()) {
-                                // select 网络事件
+                                // select 网络事件，如连接事件
                                 strategy = select(curDeadlineNanos);
                             }
                         } finally {

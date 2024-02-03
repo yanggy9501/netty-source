@@ -1,5 +1,6 @@
 package com.demo.hello.netty.client;
 
+import com.demo.hello.netty.CtxContext;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -12,7 +13,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     private ByteBuf requestBuffer;
 
     public NettyClientHandler() {
-        byte[] bytes = "你好，发送给你第一条消息".getBytes();
+        byte[] bytes = "你好!".getBytes();
         requestBuffer = Unpooled.buffer(bytes.length);
         requestBuffer.writeBytes(bytes);
     }
@@ -26,6 +27,9 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         ctx.writeAndFlush(requestBuffer);
+        System.out.println("client 成功与 sever 建立连接: " + ctx.channel().id().asLongText());
+//        CtxContext.CTX_MAP.put(ctx.channel().id().asLongText(), ctx);
+        CtxContext.CTX_MAP.put("client", ctx);
     }
 
     @Override
@@ -35,7 +39,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
             ByteBuf byteBuf = (ByteBuf) msg;
             byte[] bytes = new byte[byteBuf.readableBytes()];
             byteBuf.readBytes(bytes);
-            System.out.println("接收到请求数据：" + new String(bytes));
+            System.out.println("接收到响应数据：" + new String(bytes));
         }
     }
 

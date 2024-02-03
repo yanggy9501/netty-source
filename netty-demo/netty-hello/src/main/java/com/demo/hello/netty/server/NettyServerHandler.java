@@ -20,7 +20,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             System.out.println("接收到请求数据：" + new String(bytes));
         }
         // 写响应
-        String response = "收到你的请求，返回响应！";
+        String response = System.currentTimeMillis() + " :收到你的请求，返回响应！";
         ByteBuf byteBuf = Unpooled.copiedBuffer(response.getBytes());
         ctx.write(byteBuf);
     }

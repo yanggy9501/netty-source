@@ -88,7 +88,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
     private volatile ThreadProperties threadProperties;
 
     /**
-     * {@link  io.netty.util.concurrent.MultithreadEventExecutorGroup#MultithreadEventExecutorGroup(int, java.util.concurrent.Executor, io.netty.util.concurrent.EventExecutorChooserFactory, java.lang.Object...)}
+     * {@link  io.netty.util.concurrent.MultithreadEventExecutorGroup#MultithreadEventExecutorGroup}
      * ThreadPerTaskExecutor
      */
     private final Executor executor;
@@ -849,7 +849,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
         // 添加到队列-可能存在异步
         addTask(task);
         if (!inEventLoop) {
-            // 核心-
+            // 核心方法-启动线程
             startThread();
             if (isShutdown()) {
                 boolean reject = false;
@@ -1009,7 +1009,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
                 boolean success = false;
                 updateLastExecutionTime();
                 try {
-                    // 核心方法刁洪-执行如 io.netty.channel.nio.NioEventLoop.run
+                    // 核心方法-执行如 io.netty.channel.nio.NioEventLoop.run
                     SingleThreadEventExecutor.this.run();
                     success = true;
                 } catch (Throwable t) {
