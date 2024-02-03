@@ -482,7 +482,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
             }
             // (this 就是 Channel) Channel 与 eventLoop 的绑定就发生在这里
             AbstractChannel.this.eventLoop = eventLoop;
-            // 判断当前线程与eventLoop所绑定线程是否是同一个线程
+            // 判断当前线程与 eventLoop 所绑定线程是否是同一个线程
             if (eventLoop.inEventLoop()) {
                 // 同步注册
                 register0(promise);

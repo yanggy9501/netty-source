@@ -52,7 +52,7 @@ public class NioServerSocketChannel extends AbstractNioMessageChannel
 
     /**
      * Java api 提供的 SelectorProvider，其可以获取一个 Java nio 中 ServerSocketChannel
-     * NIO中的provider，其用于创建selector与channel。并且是单例的。
+     * NIO中的 provider，其用于创建 selector 与 channel。并且是单例的。
      */
     private static final SelectorProvider DEFAULT_SELECTOR_PROVIDER = SelectorProvider.provider();
 
@@ -75,6 +75,9 @@ public class NioServerSocketChannel extends AbstractNioMessageChannel
         }
     }
 
+    /**
+     * nio channel 配置
+     */
     private final ServerSocketChannelConfig config;
 
     /**
@@ -103,7 +106,7 @@ public class NioServerSocketChannel extends AbstractNioMessageChannel
      * Create a new instance using the given {@link ServerSocketChannel}.
      */
     public NioServerSocketChannel(ServerSocketChannel channel) {
-        // 参数3：关注的事件，接收连接事件
+        // 关注的事件，接收连接事件
         super(null, channel, SelectionKey.OP_ACCEPT);
        // 用于对channel进行配置的属性集合
         config = new NioServerSocketChannelConfig(this, javaChannel().socket());
@@ -136,6 +139,10 @@ public class NioServerSocketChannel extends AbstractNioMessageChannel
         return null;
     }
 
+    /**
+     * 获取 Java nio channel
+     * @return
+     */
     @Override
     protected ServerSocketChannel javaChannel() {
         return (ServerSocketChannel) super.javaChannel();

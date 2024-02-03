@@ -51,7 +51,7 @@ public abstract class AbstractNioChannel extends AbstractChannel {
             InternalLoggerFactory.getInstance(AbstractNioChannel.class);
 
     /**
-     * 原生的网络 io channel
+     * 原生的 java 网络 nio channel
      */
     private final SelectableChannel ch;
 
@@ -387,6 +387,8 @@ public abstract class AbstractNioChannel extends AbstractChannel {
 
     /**
      * 注册 Java 原生 Channel 到 selector 中
+     * 事件轮询
+     * @see io.netty.channel.nio.NioEventLoop#run
      * @throws Exception
      */
     @Override
@@ -396,6 +398,7 @@ public abstract class AbstractNioChannel extends AbstractChannel {
             try {
                 // 在这里进行了注册，将 NIO 原生 channel 注册到了 NIO 原生 selector
                 // 第二个参数：0 表示监听的事件（不关注任何事件，默认不关注任何事件就是为后续修改其需要关注指定类型的就绪事件）
+                // 事件轮询 @see io.netty.channel.nio.NioEventLoop.run
                 selectionKey = javaChannel().register(eventLoop().unwrappedSelector(), 0, this);
                 return;
             } catch (CancelledKeyException e) {

@@ -304,7 +304,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
                         // Registration was successful, so set the correct executor to use.
                         // See https://github.com/netty/netty/issues/2586
                         promise.registered();
-
+                        // 前面只注册了 selector，端口还未绑定
                         doBind0(regFuture, channel, localAddress, promise);
                     }
                 }
@@ -320,12 +320,12 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     final ChannelFuture initAndRegister() {
         Channel channel = null;
         try {
-            // ChannelFactory 创建 channel
+            // ChannelFactory 创建 netty channel
             // io.netty.channel.ReflectiveChannelFactory.newChannel，在 .channel(NioServerSocketChannel.class) 配置的
-            // 创建了原生 ServerSocketChannel 已经配置为非阻塞模式，做为 NioServerSocketChannel 父类的一个属性
+            // 创建该对象时创建了原生 ServerSocketChannel 并配置为非阻塞模式，做为 NioServerSocketChannel 父类的一个属性（原生的ServerSocket、ServerSocketChannel）
             channel = channelFactory.newChannel();
-            // 让 ServerSocketChannel 监听端口号，配置一下网络参数
-            // ServerSocketChannel 注册到 Selector 中，关注的网络事件，轮询
+
+            // 初始化：让 ServerSocketChannel 监听端口，配置一下网络参数, ServerSocketChannel 注册到 Selector 中，并关注的网络事件，轮询事件
             init(channel);
         } catch (Throwable t) {
             if (channel != null) {
@@ -337,7 +337,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             // as the Channel is not registered yet we need to force the usage of the GlobalEventExecutor
             return new DefaultChannelPromise(new FailedChannel(), GlobalEventExecutor.INSTANCE).setFailure(t);
         }
-        // 拿出之前创建的 EventLoopGroup，每个独立的线程复用 Selector，轮询各种 Channel 网络事件
+        // 拿出之前创建的 EventLoopGroup(boss)，每个独立的线程复用 Selector，EventLoop 中 轮询各种 Channel 网络事件
         // 把 ServerSocketChannel 注册到一个 EventLoopGroup 中的其中一个 EventLoop 上去
         // 即将 Channel 【注册】到 Selector 去（其实是 parentGroup）
         // io.netty.channel.MultithreadEventLoopGroup.register(io.netty.channel.Channel)

@@ -149,7 +149,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
         final ChannelHandler currentChildHandler = childHandler;
         final Entry<ChannelOption<?>, Object>[] currentChildOptions = newOptionsArray(childOptions);
         final Entry<AttributeKey<?>, Object>[] currentChildAttrs = newAttributesArray(childAttrs);
-        // 添加一个 Handler
+        // 添加一个 Handler；核心 --> ServerBootstrapAcceptor 连接处理器：客户端连接发送到服务端时，这个处理器会接收客户端的连接并处理
         p.addLast(new ChannelInitializer<Channel>() {
             @Override
             public void initChannel(final Channel ch) {

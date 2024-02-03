@@ -17,13 +17,13 @@ public class Server {
     public static void main(String[] args) {
         // 线程组，不同的事件用不同的线程组处理
         // 处理连接|监听事件的线程组
-        NioEventLoopGroup parentGroup = new NioEventLoopGroup();
+        NioEventLoopGroup bossGroup = new NioEventLoopGroup();
         // 工作线程组，处理Handler
         NioEventLoopGroup childGroup = new NioEventLoopGroup();
         try {
             // 相当 netty 服务器
             ServerBootstrap serverBootstrap = new ServerBootstrap();
-            serverBootstrap.group(parentGroup, childGroup)
+            serverBootstrap.group(bossGroup, childGroup)
                 // 监听端口的 ServerSocketChannel，其他的通信模式 epoll，aio，local（jvm内），embedded（单元测试用）
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG, 1024)
@@ -45,7 +45,7 @@ public class Server {
             ex.printStackTrace();
         } finally {
             // 关闭线程池
-            parentGroup.shutdownGracefully();
+            bossGroup.shutdownGracefully();
             childGroup.shutdownGracefully();
         }
 
