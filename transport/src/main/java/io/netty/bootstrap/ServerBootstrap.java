@@ -164,6 +164,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
                     public void run() {
                         // 将 ServerBootstrapAcceptor 处理器添加到 pipeline
                         // ServerBootstrapAcceptor 处理器用于接收 ServerBootstrap 中的属性值，我们通常称其为连接处理器
+                        // 【连接处理：parentGroup 处理连接请求，然后 childGroup 去注册读写事件，处理后续的 io 数据】
                         pipeline.addLast(new ServerBootstrapAcceptor(
                                 ch, currentChildGroup, currentChildHandler, currentChildOptions, currentChildAttrs));
                     }

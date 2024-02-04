@@ -304,7 +304,8 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
                         // Registration was successful, so set the correct executor to use.
                         // See https://github.com/netty/netty/issues/2586
                         promise.registered();
-                        // 前面只注册了 selector，端口还未绑定
+                        // 前面只注册了 selector，端口还未绑定, 绑定端口
+                        // 方法内部启动线程处理事件, 在 io.netty.channel.nio.NioEventLoop.run 进行轮询处理各种事件
                         doBind0(regFuture, channel, localAddress, promise);
                     }
                 }
@@ -325,7 +326,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             // 创建该对象时创建了原生 ServerSocketChannel 并配置为非阻塞模式，做为 NioServerSocketChannel 父类的一个属性（原生的ServerSocket、ServerSocketChannel）
             channel = channelFactory.newChannel();
 
-            // 初始化：让 ServerSocketChannel 监听端口，配置一下网络参数, ServerSocketChannel 注册到 Selector 中，并关注的网络事件，轮询事件
+            // 初始化：配置一下网络参数等等
             init(channel);
         } catch (Throwable t) {
             if (channel != null) {
@@ -341,7 +342,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
         // 把 ServerSocketChannel 注册到一个 EventLoopGroup 中的其中一个 EventLoop 上去
         // 即将 Channel 【注册】到 Selector 去（其实是 parentGroup）
         // io.netty.channel.MultithreadEventLoopGroup.register(io.netty.channel.Channel)
-        ChannelFuture regFuture = config().group().register(channel);
+        ChannelFuture regFuture = config().group().register(channel); // 里面有线程启动
         if (regFuture.cause() != null) {
             if (channel.isRegistered()) {
                 channel.close();
@@ -373,6 +374,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
 
         // This method is invoked before channelRegistered() is triggered.  Give user handlers a chance to set up
         // the pipeline in its channelRegistered() implementation.
+        // channel.eventLoop()#execute 会启动线程绑定端口和轮询事件
         channel.eventLoop().execute(new Runnable() {
             @Override
             public void run() {

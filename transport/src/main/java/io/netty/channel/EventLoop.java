@@ -20,7 +20,7 @@ import io.netty.util.concurrent.OrderedEventExecutor;
 /**
  * EventLoopGroup 是一个线程池，每个线程叫做 EventLoop，每个线程都会负责一部分的客户端
  * 连接的 SocketChannel, 对这些 SocketChannel都会注册到自己的 Selector 中，每个线程通过自己的
- * Selector 取轮询（Loo怕）他自己负责的连接的网络事件。
+ * Selector 去轮询他自己负责的连接的网络事件。
  *
  * Will handle all the I/O operations for a {@link Channel} once registered.
  *

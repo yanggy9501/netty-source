@@ -27,7 +27,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         ctx.writeAndFlush(requestBuffer);
-        System.out.println("client 成功与 sever 建立连接: " + ctx.channel().id().asLongText());
+        System.out.println("client 成功与 sever 建立连接");
 //        CtxContext.CTX_MAP.put(ctx.channel().id().asLongText(), ctx);
         CtxContext.CTX_MAP.put("client", ctx);
     }

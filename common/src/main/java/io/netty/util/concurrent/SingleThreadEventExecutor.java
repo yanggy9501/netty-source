@@ -846,10 +846,10 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
     private void execute(Runnable task, boolean immediate) {
         boolean inEventLoop = inEventLoop();
-        // 添加到队列-可能存在异步
+        // 添加到队列到: io.netty.util.concurrent.SingleThreadEventExecutor.taskQueue 等待异步处理
         addTask(task);
-        if (!inEventLoop) {
-            // 核心方法-启动线程
+        if (!inEventLoop) { // 不是同一个线程
+            // 启动异步线程处理任务
             startThread();
             if (isShutdown()) {
                 boolean reject = false;

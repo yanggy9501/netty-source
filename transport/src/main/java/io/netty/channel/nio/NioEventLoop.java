@@ -833,8 +833,8 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             // to a spin loop
             // 如果是 OP_ACCEPT 事件
             if ((readyOps & (SelectionKey.OP_READ | SelectionKey.OP_ACCEPT)) != 0 || readyOps == 0) {
-                // 连接事件：io.netty.channel.nio.AbstractNioMessageChannel.NioMessageUnsafe.read
-                // 读事件：io.netty.channel.nio.AbstractNioByteChannel.NioByteUnsafe.read
+                // 连接事件: io.netty.channel.nio.AbstractNioMessageChannel.NioMessageUnsafe.read
+                // 读事件:   io.netty.channel.nio.AbstractNioByteChannel.NioByteUnsafe.read
                 unsafe.read();
             }
         } catch (CancelledKeyException ignored) {
