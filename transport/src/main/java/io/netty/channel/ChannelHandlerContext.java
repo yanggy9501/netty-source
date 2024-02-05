@@ -83,11 +83,10 @@ import io.netty.util.concurrent.EventExecutor;
  * {@link ChannelPipeline} to find out more about inbound and outbound operations,
  * what fundamental differences they have, how they flow in a  pipeline,  and how to handle
  * the operation in your application.
- *
- * 在netty中，ChannelHandler不会直接添加到 pipeline 中，而是通过 ChannelHandlerContext 进行一层包装，通过ChannelHandlerContext可实现事件传播。
- * ChannelHandlerContext 的功能与 ChannelHandler 类似，当调用 fireXXX 方法时会触发handler相应的方法。
- * ChannelHandlerContext通过它的成员参数prev和next来形成链表，当有事件进入链表时能进行向上传播或者向下传播。
  */
+// 在netty中，ChannelHandler不会直接添加到 pipeline 中，而是通过 ChannelHandlerContext 进行一层包装，通过ChannelHandlerContext可实现事件传播。就如 LinkList
+// ChannelHandlerContext 的功能与 ChannelHandler 类似，当调用 fireXXX 方法时会触发 handler 相应的方法。
+// ChannelHandlerContext通过它的成员参数prev和next来形成链表，当有事件进入链表时能进行向上传播或者向下传播。
 public interface ChannelHandlerContext extends AttributeMap, ChannelInboundInvoker, ChannelOutboundInvoker {
 
     /**

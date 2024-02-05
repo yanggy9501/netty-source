@@ -59,7 +59,9 @@ import static io.netty.channel.ChannelHandlerMask.MASK_WRITE;
 import static io.netty.channel.ChannelHandlerMask.mask;
 
 /**
- * ChannelHandler 的包装类，就如 LinkList 中 元素被包装成一个个的 Node 实现链表
+ * ChannelHandler 的包装类，就如 LinkList 中 元素被包装成一个个的 Node 实现链表.
+ * 对应有 pipeline、executor、prev和 next。
+ * AbstractChannelHandlerContext 还提供了链路运转的方法
  */
 abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, ResourceLeakHint {
 
@@ -1075,6 +1077,9 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
         return ctx;
     }
 
+    /**
+     * 找下一个MASK_ONLY_INOUND的next
+     */
     private AbstractChannelHandlerContext findContextOutbound(int mask) {
         AbstractChannelHandlerContext ctx = this;
         EventExecutor currentExecutor = executor();

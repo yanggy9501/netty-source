@@ -53,7 +53,9 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * NioEventLoop 是一个只有一个线程的线程池，本身含有一个 NioEventLoopGroup 传递过来的 Executor。
  * 接口功能：
- * 1. 线程池类，执行任务
+ * 1. 线程池类，执行任务 --> run; 执行 io 任务 和 非 io 任务
+ *   a.io 任务： 即selectionKey中ready的事件，如accept、connect、read、write等，由processSelectedKeys方法触发。
+ *   b.非 io 任务：添加到 taskQueue 中的任务，如register0、bind0等任务，由runAllTasks方法触发。
  * 2. EventLoop，处理已经注册到 channel 的 io 事件
  * 3. channel 的注册
  *
@@ -144,14 +146,16 @@ public final class NioEventLoop extends SingleThreadEventLoop {
 
     /**
      * NioEventLoop是一个事件轮询器，在它的 run 方法中其实是一个死循环，不断重复三个过程：
-     * 1. 获取IO事件
-     * 2. 处理IO事件，
-     * 3. 处理任务队列中的task
+     * 1. 获取IO事件, 处理IO事件
+     * 2. 处理任务队列中的task
      *  而 SelectStrategy 就是用于第一步获取 IO 事件，它的 calculateStrategy 方法决定以何种方式获取IO事件，在 SelectStrategy 接口中定义了三种策略
      * {@link io.netty.channel.DefaultSelectStrategyFactory.INSTANCE}
      */
     private final SelectStrategy selectStrategy;
 
+    /**
+     * io 任务和非 io 任务的执行时间比率，默认 50 则表示允许非IO任务执行的时间与IO任务的执行时间相等。
+     */
     private volatile int ioRatio = 50;
     private int cancelledKeys;
     private boolean needsToSelectAgain;
@@ -532,16 +536,26 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     }
 
     /**
-     * 线程 “任务” run方法，事件轮询
+     * 线程 “任务” run方法，事件轮询, 处理连接以及处理事件
      */
     @Override
     protected void run() {
+        // 1、先定义当前时间currentTimeNanos。
+        // 2、接着计算出一个执行最少需要的时间timeoutMillis。
+        // 3、每次对selectCnt做++操作。
+        // 4、进行判断，如果到达执行到最少时间，则selectCnt重置为1。
+        // 5、一旦到达 SELECTOR_AUTO_REBUILD_THRESHOLD 这个阀值，就需要重建selector来解决这个问题。
+        // 6、这个阀值默认是512。
         int selectCnt = 0;
         // 死循环轮询
         for (;;) {
             try {
                 int strategy;
                 try {
+                    // 1. 如果 taskQueue 不为空，也就是 hasTasks() 返回 true，那么执行一次 selectNow()，该方法不会阻塞
+                    // 2. 如果 hasTasks() 返回 false，那么执行 SelectStrategy.SELECT 分支，进行 select(...) 时会阻塞的
+                    // 即按照是否有任务排队决定是否进行阻塞
+
                     strategy = selectStrategy.calculateStrategy(selectNowSupplier, hasTasks());
                     switch (strategy) {
                     case SelectStrategy.CONTINUE:
@@ -583,8 +597,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                 needsToSelectAgain = false;
                 final int ioRatio = this.ioRatio;
                 boolean ranTasks;
-                // 处理事件 key
-                if (ioRatio == 100) {
+                if (ioRatio == 100) { // ioRatio 默认 50
                     try {
                         if (strategy > 0) {
                             processSelectedKeys();
@@ -595,11 +608,14 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                         ranTasks = runAllTasks();
                     }
                 } else if (strategy > 0) {
+                    // 如果 ioRatio 不是 100，那么根据 io 操作的耗时，限制非 io 操作耗时
                     final long ioStartTime = System.nanoTime();
                     try {
+                        // 执行网络io操作
                         processSelectedKeys();
                     } finally {
                         // Ensure we always run tasks.
+                        // 根据 IO 操作消耗的时间，计算执行非 IO 操作（runAllTasks）可以用多少时间.
                         final long ioTime = System.nanoTime() - ioStartTime;
                         ranTasks = runAllTasks(ioTime * (100 - ioRatio) / ioRatio);
                     }

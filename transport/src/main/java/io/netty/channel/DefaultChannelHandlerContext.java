@@ -17,6 +17,9 @@ package io.netty.channel;
 
 import io.netty.util.concurrent.EventExecutor;
 
+/**
+ * 初始化 handler，让Handler处理真正的逻辑
+ */
 final class DefaultChannelHandlerContext extends AbstractChannelHandlerContext {
 
     private final ChannelHandler handler;

@@ -76,7 +76,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
                     SingleThreadEventExecutor.class, ThreadProperties.class, "threadProperties");
 
     /**
-     *  普通任务队列
+     *  普通任务队列，即非 io 任务，如 register0、bind0 等任务
      */
     private final Queue<Runnable> taskQueue;
 
