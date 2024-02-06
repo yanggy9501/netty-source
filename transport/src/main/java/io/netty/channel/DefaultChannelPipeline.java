@@ -1385,6 +1385,9 @@ public class DefaultChannelPipeline implements ChannelPipeline {
 
         @Override
         public void read(ChannelHandlerContext ctx) {
+            // 在 selector 上注册事件
+            // NioServerSocketChannel 是 accept 事件
+            // NioSocketChannel 是 read 事件
             unsafe.beginRead();
         }
 
@@ -1422,7 +1425,9 @@ public class DefaultChannelPipeline implements ChannelPipeline {
         @Override
         public void channelActive(ChannelHandlerContext ctx) {
             ctx.fireChannelActive();
-
+            // 在 selector 上注册事件
+            // NioServerSocketChannel 是 accept 事件
+            // NioSocketChannel 是 read 事件
             readIfIsAutoRead();
         }
 

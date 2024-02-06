@@ -69,6 +69,7 @@ public abstract class AbstractNioMessageChannel extends AbstractNioChannel {
             final ChannelConfig config = config();
             final ChannelPipeline pipeline = pipeline();
             final RecvByteBufAllocator.Handle allocHandle = unsafe().recvBufAllocHandle();
+            // 重置配置参数
             allocHandle.reset(config);
 
             boolean closed = false;
@@ -76,6 +77,7 @@ public abstract class AbstractNioMessageChannel extends AbstractNioChannel {
             try {
                 try {
                     do {
+                        // 调 ServerSocketChannel.accept 获取 SocketChannel
                         // io.netty.channel.socket.nio.NioServerSocketChannel.doReadMessages
                         int localRead = doReadMessages(readBuf);
                         if (localRead == 0) {
@@ -95,6 +97,8 @@ public abstract class AbstractNioMessageChannel extends AbstractNioChannel {
                 int size = readBuf.size();
                 for (int i = 0; i < size; i ++) {
                     readPending = false;
+                    // 传播读事件，传递的是客户端通道
+                    // 在 ServerBootstrapAcceptor.channelRead 来注册获取到的SocketChannel的 read 事件到 work 线程上。
                     pipeline.fireChannelRead(readBuf.get(i));
                 }
                 readBuf.clear();

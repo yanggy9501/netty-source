@@ -517,21 +517,28 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                     return;
                 }
                 boolean firstRegistration = neverRegistered;
-                // 绑定: io.netty.channel.nio.AbstractNioChannel.doRegister
+                // 绑定: io.netty.channel.nio.AbstractNioChannel.doRegister 进行jdk底层的 channel 注册到 selector 上
                 doRegister();
                 neverRegistered = false;
                 registered = true;
 
                 // Ensure we call handlerAdded(...) before we actually notify the promise. This is needed as the
                 // user may already fire events through the pipeline in the ChannelFutureListener.
-                // 添加 handler：最终到 io.netty.channel.ChannelInitializer#initChannel
+                // 添加 handler：最终到 io.netty.channel.ChannelInitializer#initChannel; 将 ChannelInitializer 内部添加的 handlers 添加到 pipeline 中
                 pipeline.invokeHandlerAddedIfNeeded();
 
+                // 设置当前 promise 的状态为 success
+                // 因为当前 register 方法是在 eventLoop 中的线程中执行的，需要通知提交 register 操作的线程
                 safeSetSuccess(promise);
+
+                // 当前的 register 操作已经成功，该事件应该被 pipeline 上所有关心 register 事件的 handler 感知到，往 pipeline 中扔一个事件
                 pipeline.fireChannelRegistered();
                 // Only fire a channelActive if the channel has never been registered. This prevents firing
                 // multiple channel actives if the channel is deregistered and re-registered.
+                // 这里 active 指的是 channel 已经打开，保证 fireChannelActive 只执行一次
+                // true：ServerSocketChannel 绑定成功或者 SocketChannel 连接成功
                 if (isActive()) {
+                    // 如果该 channel 是第一次执行 register，那么 fire ChannelActive 事件
                     if (firstRegistration) {
                         pipeline.fireChannelActive();
                     } else if (config().isAutoRead()) {
@@ -539,6 +546,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                         // again so that we process inbound data.
                         //
                         // See https://github.com/netty/netty/issues/4805
+                        // 该 channel 之前已经 register 过了，这里让该 channel 立马去监听通道中的 OP_READ 事件
                         beginRead();
                     }
                 }
@@ -573,6 +581,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
 
             boolean wasActive = isActive();
             try {
+                // 绑定端口
                 doBind(localAddress);
             } catch (Throwable t) {
                 safeSetFailure(promise, t);
@@ -580,6 +589,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 return;
             }
 
+            // 绑定端口之后，调用 fireChannelActive 在 fireChannelActive 里面绑定监听事件
             if (!wasActive && isActive()) {
                 invokeLater(new Runnable() {
                     @Override

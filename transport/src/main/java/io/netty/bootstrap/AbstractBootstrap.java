@@ -273,7 +273,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     }
 
     private ChannelFuture doBind(final SocketAddress localAddress) {
-        // 创建，初始化 Channel，并将其注册到 Selector，返回一个异步结果
+        // 创建，初始化 netty Channel，并将其注册到 Selector，返回一个异步结果
         final ChannelFuture regFuture = initAndRegister();
         //  从异步结果中获取 channel，里面包含原生的 channel
         final Channel channel = regFuture.channel();

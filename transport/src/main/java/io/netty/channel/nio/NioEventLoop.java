@@ -784,6 +784,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             final Object a = k.attachment();
 
             if (a instanceof AbstractNioChannel) {
+                // 处理 accept 事件
                 processSelectedKey(k, (AbstractNioChannel) a);
             } else {
                 @SuppressWarnings("unchecked")
@@ -836,6 +837,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                 ops &= ~SelectionKey.OP_CONNECT;
                 k.interestOps(ops);
 
+                // 注册 read 事件
                 unsafe.finishConnect();
             }
 
@@ -849,6 +851,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             // to a spin loop
             // 如果是 OP_ACCEPT 事件
             if ((readyOps & (SelectionKey.OP_READ | SelectionKey.OP_ACCEPT)) != 0 || readyOps == 0) {
+                // 处理 accept 以及 read 事件
                 // 连接事件: io.netty.channel.nio.AbstractNioMessageChannel.NioMessageUnsafe.read
                 // 读事件:   io.netty.channel.nio.AbstractNioByteChannel.NioByteUnsafe.read
                 unsafe.read();
