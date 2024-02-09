@@ -781,6 +781,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             // See https://github.com/netty/netty/issues/2363
             selectedKeys.keys[i] = null;
 
+            // @see io.netty.channel.nio.AbstractNioChannel.doRegister -> selectionKey = javaChannel().register(eventLoop().unwrappedSelector(), 0, this);
             final Object a = k.attachment();
 
             if (a instanceof AbstractNioChannel) {

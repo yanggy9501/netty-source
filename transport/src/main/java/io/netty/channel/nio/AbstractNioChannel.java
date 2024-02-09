@@ -398,6 +398,7 @@ public abstract class AbstractNioChannel extends AbstractChannel {
             try {
                 // 在这里进行了注册，将 NIO 原生 channel 注册到了 NIO 原生 selector
                 // 第二个参数：0 表示监听的事件（不关注任何事件，默认不关注任何事件就是为后续修改其需要关注指定类型的就绪事件）
+                // 第三个参数：附加附件参数，当监听到对应的事件时可以获取该附件参数做一些事件
                 // 事件轮询 @see io.netty.channel.nio.NioEventLoop.run
                 selectionKey = javaChannel().register(eventLoop().unwrappedSelector(), 0, this);
                 return;
