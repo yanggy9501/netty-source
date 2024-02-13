@@ -345,7 +345,7 @@ public class HashedWheelTimer implements Timer {
         //ticksPerWheel may not be greater than 2^30
         checkInRange(ticksPerWheel, 1, 1073741824, "ticksPerWheel");
 
-        // 格子数向 2 的 n 次幂靠齐
+        // 格子数(周期)向 2 的 n 次幂靠齐
         ticksPerWheel = normalizeTicksPerWheel(ticksPerWheel);
         HashedWheelBucket[] wheel = new HashedWheelBucket[ticksPerWheel];
         for (int i = 0; i < wheel.length; i ++) {
