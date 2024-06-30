@@ -35,6 +35,12 @@ public class NioServerHandle implements Runnable {
             /*注册事件，表示关心客户端连接*/
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
+            /*
+            // 阻塞时接收连接
+            serverSocketChannel.configureBlocking(true);
+            SocketChannel socketChannel = serverSocketChannel.accept();
+            */
+
             started = true;
             System.out.println("服务器已启动，端口号：" + port);
         } catch (IOException e) {
