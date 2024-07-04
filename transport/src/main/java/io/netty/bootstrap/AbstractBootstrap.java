@@ -342,6 +342,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
         // 把 ServerSocketChannel 注册到一个 EventLoopGroup 中的其中一个 EventLoop 上去
         // 即将 Channel 【注册】到 Selector 去（其实是 parentGroup）
         // io.netty.channel.MultithreadEventLoopGroup.register(io.netty.channel.Channel)
+        // io.netty.channel.nio.NioEventLoop.run
         ChannelFuture regFuture = config().group().register(channel); // 里面有线程启动
         if (regFuture.cause() != null) {
             if (channel.isRegistered()) {

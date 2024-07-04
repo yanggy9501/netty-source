@@ -490,7 +490,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 try {
                     // 异步注册，将注册作为一个任务给 EventLoop 执行
                     // 执行当前线程所绑定的 eventLoop 的 execute(), 这个 execute() 会将参数任务写入到 EventLoop 的【任务队列 taskQueue 中】
-                    // 并创建启动新的线程
+                    // 并创建启动新的线程 --> io.netty.channel.nio.NioEventLoop.run
                     eventLoop.execute(new Runnable() {
                         @Override
                         public void run() {

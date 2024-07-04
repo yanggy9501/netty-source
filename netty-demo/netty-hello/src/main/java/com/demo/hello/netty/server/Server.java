@@ -17,9 +17,9 @@ public class Server {
     public static void main(String[] args) {
         // 线程组，不同的事件用不同的线程组处理
         // 处理连接|监听事件的线程组
-        NioEventLoopGroup bossGroup = new NioEventLoopGroup();
+        NioEventLoopGroup bossGroup = new NioEventLoopGroup(1);
         // 工作线程组，处理Handler
-        NioEventLoopGroup childGroup = new NioEventLoopGroup();
+        NioEventLoopGroup childGroup = new NioEventLoopGroup(8);
         try {
             // 相当 netty 服务器
             ServerBootstrap serverBootstrap = new ServerBootstrap();

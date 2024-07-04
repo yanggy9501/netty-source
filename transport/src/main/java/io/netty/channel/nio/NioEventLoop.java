@@ -58,6 +58,11 @@ import java.util.concurrent.atomic.AtomicLong;
  *   b.非 io 任务：添加到 taskQueue 中的任务，如register0、bind0等任务，由runAllTasks方法触发。
  * 2. EventLoop，处理已经注册到 channel 的 io 事件
  * 3. channel 的注册
+ * 4. 该Channel的整个生命周期中都是有这个绑定的 EventLoop 来服务的，Channel中的所有I/O操作和事件都由EventLoop中的线程处理，也就是说一个Channel的一生之中都只会使用到一个线程
+ *
+ * 总结：
+ * 1：I/O 任务，即 selectionKey 中 ready 的事件，如 accept、connect、read、write 等，由 processSelectedKeys 方法触发
+ * 2：非 IO 任务，添加到 taskQueue 中的任务，如 register0、bind0 等任务，由 runAllTasks 方法触发
  *
  * {@link SingleThreadEventLoop} implementation which register the {@link Channel}'s to a
  * {@link Selector} and so does the multi-plexing of these in the event loop.
@@ -536,7 +541,10 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     }
 
     /**
-     * 线程 “任务” run方法，事件轮询, 处理连接以及处理事件
+     * 线程 “任务” run方法，事件轮询, 处理连接以及处理事件：
+     *
+     * 1：I/O 任务，即 selectionKey 中 ready 的事件，如 accept、connect、read、write 等，由 processSelectedKeys 方法触发
+     * 2：非 IO 任务，添加到 taskQueue 中的任务，如 register0(selector)、bind0(bind) 等任务，由 runAllTasks 方法触发
      */
     @Override
     protected void run() {
@@ -604,7 +612,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                         }
                     } finally {
                         // Ensure we always run tasks.
-                        // 执行任务
+                        // 执行任务 register0(selector)、bind0(bind) 等任务
                         ranTasks = runAllTasks();
                     }
                 } else if (strategy > 0) {
@@ -619,7 +627,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                         final long ioTime = System.nanoTime() - ioStartTime;
                         ranTasks = runAllTasks(ioTime * (100 - ioRatio) / ioRatio);
                     }
-                } else {
+                } else {// 执行任务 register0(selector)、bind0(bind) 等任务
                     ranTasks = runAllTasks(0); // This will run the minimum number of tasks
                 }
 
